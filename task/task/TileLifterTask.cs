@@ -180,9 +180,9 @@ namespace task.task
             DevTcp?.SendCmd(DevLifterCmdTypeE.介入2, (byte)invo, 0);
         }
 
-        internal void DoShift(TileShiftStatusE ts)
+        internal void DoShift(TileShiftStatusE ts, int count = 0)
         {
-            DevTcp?.SendCmd(DevLifterCmdTypeE.转产, (byte)ts, 0);
+            DevTcp?.SendCmd(DevLifterCmdTypeE.转产, (byte)ts, (byte)count);
         }
 
         internal void SetInTaskStatus(bool status)

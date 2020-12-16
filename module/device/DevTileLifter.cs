@@ -84,13 +84,13 @@ namespace module.device
         public DevLifterGoodsE Goods1//工位1品种 左
         {
             set => Set(ref goods1, (byte)value);
-            get => (DevLifterGoodsE)operatemode;
+            get => (DevLifterGoodsE)goods1;
         }
 
         public DevLifterGoodsE Goods2//工位2品种 右
         {
             set => Set(ref goods2, (byte)value);
-            get => (DevLifterGoodsE)operatemode;
+            get => (DevLifterGoodsE)goods2;
         }
 
         public TileShiftStatusE ShiftStatus//转产状态

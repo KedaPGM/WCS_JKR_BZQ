@@ -34,8 +34,9 @@
 
     public enum TileShiftStatusE
     {
-        完成,
+        复位,
         转产中,
+        完成
     }
 
 }
