@@ -223,6 +223,11 @@ namespace resource.device
             return DeviceList.Find(c => c.id == device_id)?.Type ?? DeviceTypeE.其他;
         }
 
+        public bool ExistDevByGid(uint goodid)
+        {
+            return DeviceList.Exists(c => c.goods_id == goodid || c.old_goodid == goodid || c.pre_goodid == goodid);
+        }
+
         #endregion
 
 
