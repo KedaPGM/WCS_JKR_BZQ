@@ -121,6 +121,7 @@ namespace task.device
                             }
 
                             if (task.Type != DeviceTypeE.下砖机) continue;
+                            if (task.DevStatus.Goods1 == 0 || task.DevStatus.Goods2 == 0) continue;
 
                             int count = PubMaster.Dic.GetDtlIntCode("TileLifterShiftCount");
                             switch (task.DevStatus.ShiftStatus)
