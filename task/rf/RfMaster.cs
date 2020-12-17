@@ -1118,7 +1118,7 @@ namespace task.rf
                 }
             }
         }
-        
+
         private void GetTrack(RfMsgMod msg)
         {
             TrackPack pack = new TrackPack();

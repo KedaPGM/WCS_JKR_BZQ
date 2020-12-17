@@ -342,6 +342,12 @@ namespace task.trans
                                 if (!PubMaster.Track.IsTrackFull(trans.give_track_id))
                                 {
                                     ushort fullqty = PubMaster.Area.GetAreaFullQty(trans.area_id);
+                                    // 600 规格 满砖数-1
+                                    Goods gs = PubMaster.Goods.GetGoods(trans.goods_id);
+                                    if (gs!= null && (gs.width == 600 || gs.length == 600))
+                                    {
+                                        fullqty--;
+                                    }
                                     //当轨道满砖数量库存时就将轨道设为满砖轨道
                                     if (PubMaster.Goods.GetTrackCount(trans.give_track_id) == fullqty)
                                     {
