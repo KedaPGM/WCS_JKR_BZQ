@@ -92,7 +92,10 @@ namespace task.task
         }
 
 
-        public TileShiftStatusE TileShiftStatus { set; get; }
+        public TileShiftStatusE TileShiftStatus
+        {
+            get => DevStatus?.ShiftStatus ?? TileShiftStatusE.完成;
+        }
 
         public bool StopOneTime { set; get; }
 
