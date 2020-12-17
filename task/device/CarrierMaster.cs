@@ -200,6 +200,11 @@ namespace task.device
             return DevList.Exists(c => c.TrackId == trackid);
         }
 
+        internal bool HaveInTrackAndLoad(uint trackid)
+        {
+            return DevList.Exists(c => c.TrackId == trackid && c.Load == DevCarrierLoadE.有货);
+        }
+
         internal bool OnlyOneCarrierInTrack(uint trackid)
         {
             return DevList.Count(c => c.TrackId == trackid) == 1;
