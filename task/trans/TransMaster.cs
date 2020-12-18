@@ -859,7 +859,7 @@ namespace task.trans
                                                 if (!IsTraInTrans(t) && PubMaster.Area.isFerryWithTrack(trans.area_id, trans.take_ferry_id, t) &&
                                                     !PubTask.Carrier.HaveInTrack(t, trans.carrier_id))
                                                 {
-                                                    if (SetGiveSite(trans, t))
+                                                    if (SetTakeSite(trans, t))
                                                     {
                                                         SetStatus(trans, TransStatusE.取消);
                                                     }
