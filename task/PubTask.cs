@@ -13,6 +13,7 @@ namespace task
         public static TileLifterMaster TileLifter { set; get; }
         public static TransMaster Trans { set; get; }
         public static RfMaster Rf { set; get; }
+        public static TrafficControlMaster TrafficControl { set; get; }
         public static void Init()
         {
             Carrier = new CarrierMaster();
@@ -20,6 +21,7 @@ namespace task
             TileLifter = new TileLifterMaster();
             Trans = new TransMaster();
             Rf = new RfMaster();
+            TrafficControl = new TrafficControlMaster();
         }
 
         public static void Start()
@@ -42,6 +44,7 @@ namespace task
             Carrier?.Start();
             Trans?.Start();
             Rf?.Start();
+            TrafficControl?.Start();
         }
 
         public static void Stop()
@@ -51,6 +54,7 @@ namespace task
             Ferry?.Stop();
             Carrier?.Stop();
             Rf?.Stop();
+            TrafficControl?.Stop();
         }
     }
 }

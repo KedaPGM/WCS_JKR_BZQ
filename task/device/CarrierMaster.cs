@@ -305,6 +305,16 @@ namespace task.device
             return trackid > 0 ? PubMaster.Track.GetTrack(trackid) : null;
         }
 
+        /// <summary>
+        /// 获取运输车当前所在轨道ID
+        /// </summary>
+        /// <param name="carrier_id"></param>
+        /// <returns></returns>
+        internal uint GetCarrierTrackID(uint carrier_id)
+        {
+            return DevList.Find(c => c.ID == carrier_id)?.TrackId ?? 0;
+        }
+
         internal bool IsLoad(uint carrier_id)
         {
             return DevList.Exists(c => c.ID == carrier_id 

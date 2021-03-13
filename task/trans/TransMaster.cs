@@ -2051,6 +2051,16 @@ namespace task.trans
                 (c.take_ferry_id == 0 || c.give_ferry_id == 0));
         }
 
+        /// <summary>
+        /// 获取任务当前记录的摆渡车目的轨道ID
+        /// </summary>
+        /// <param name="transid"></param>
+        /// <returns></returns>
+        public uint GetRecordTraID(uint transid)
+        {
+            return TransList.Find(c => c.id == transid)?.RecordTraID ?? 0;
+        }
+
         #endregion
 
         #region[更新界面数据]
@@ -2246,6 +2256,13 @@ namespace task.trans
             result = "";
             if (ferryid != 0 && isnotload && PubTask.Ferry.IsLoad(ferryid))
             {
+                return false;
+            }
+
+            // 数据记录摆渡车任务目的
+            if (trans.RecordTraID != locatetrackid)
+            {
+                trans.RecordTraID = locatetrackid;
                 return false;
             }
 

@@ -186,6 +186,9 @@ namespace task.trans
                     SetCancel(trans);
                 }
 
+                // 记录归零
+                trans.RecordTraID = 0;
+
                 SendMsg(trans);
             }
         }
@@ -325,7 +328,7 @@ namespace task.trans
             return TransList;
         }
 
-        public StockTrans GetTrans(int transid)
+        public StockTrans GetTrans(uint transid)
         {
             StockTrans stock = TransList.Find(c => c.id == transid);
             if (stock == null)

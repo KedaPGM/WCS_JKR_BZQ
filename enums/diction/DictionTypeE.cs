@@ -28,6 +28,8 @@
 
         public const string UserLoginFunction = nameof(UserLoginFunction);//是否开启登陆功能
 
+        public const string MinStockTime = nameof(MinStockTime);
+        public const string FerryAvoidNumber = nameof(FerryAvoidNumber);
     }
 
     public static class DicSwitchTag
