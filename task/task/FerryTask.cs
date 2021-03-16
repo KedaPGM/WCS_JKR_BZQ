@@ -3,6 +3,7 @@ using module.device;
 using resource;
 using socket.tcp;
 using System;
+using System.Collections.Generic;
 
 namespace task.task
 {
@@ -279,6 +280,24 @@ namespace task.task
                     break;
             }
             return trackId;
+        }
+
+        /// <summary>
+        /// 获取摆渡车当前所有对位轨道
+        /// </summary>
+        /// <returns></returns>
+        internal List<uint> GetFerryCurrentTrackIds()
+        {
+            List<uint> trackIds = new List<uint>();
+            if (IsUpLight)
+            {
+                trackIds.Add(UpTrackId);
+            }
+            if (IsDownLight)
+            {
+                trackIds.Add(DownTrackId);
+            }
+            return trackIds;
         }
 
         #endregion
