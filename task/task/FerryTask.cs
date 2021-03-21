@@ -297,6 +297,21 @@ namespace task.task
             {
                 trackIds.Add(DownTrackId);
             }
+
+            if (trackIds == null || trackIds.Count == 0) // WDNMD都不亮
+            {
+                switch (Type)
+                {
+                    case DeviceTypeE.上摆渡:
+                        trackIds.Add(DownTrackId);
+                        break;
+                    case DeviceTypeE.下摆渡:
+                        trackIds.Add(UpTrackId);
+                        break;
+                    default:
+                        break;
+                }
+            }
             return trackIds;
         }
 
