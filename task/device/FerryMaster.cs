@@ -686,7 +686,7 @@ namespace task.device
             try
             {
                 FerryTask task = DevList.Find(c => c.ID == ferryid);
-                if (IsAllowToMove(task, out result))
+                if (!IsAllowToMove(task, out result))
                 {
                     return false;
                 }
@@ -697,7 +697,8 @@ namespace task.device
                         || ((task.DevStatus.CurrentTask == DevFerryTaskE.终止 || task.DevStatus.CurrentTask == DevFerryTaskE.定位)
                             && (task.DevStatus.FinishTask == DevFerryTaskE.未知 || task.DevStatus.FinishTask == DevFerryTaskE.定位))))
                 {
-                    if (task.DevStatus.TargetSite != 0 && PubMaster.Track.GetTrackId(task.DevStatus.TargetSite) != to_track_id && task.DevStatus.FinishTask != DevFerryTaskE.终止)
+                    if (task.DevStatus.TargetSite != 0 && PubMaster.Track.GetTrackId(task.DevStatus.TargetSite) != to_track_id 
+                        && task.DevStatus.CurrentTask != DevFerryTaskE.终止)
                     {
                         Thread.Sleep(500);
                         task.DoStop();
