@@ -568,6 +568,7 @@ namespace task.device
                         }
                     }
 
+                    mlog.Info(true, string.Format(@"定位车【{0}】, PC手动", task.Device.name));
                     task.DoLocate(ferrycode);
                     return true;
                 }
@@ -697,10 +698,9 @@ namespace task.device
                         || ((task.DevStatus.CurrentTask == DevFerryTaskE.终止 || task.DevStatus.CurrentTask == DevFerryTaskE.定位)
                             && (task.DevStatus.FinishTask == DevFerryTaskE.未知 || task.DevStatus.FinishTask == DevFerryTaskE.定位))))
                 {
-                    if (task.DevStatus.TargetSite != 0 && PubMaster.Track.GetTrackId(task.DevStatus.TargetSite) != to_track_id 
-                        && task.DevStatus.CurrentTask != DevFerryTaskE.终止)
+                    if (task.DevStatus.TargetSite != 0 && PubMaster.Track.GetTrackId(task.DevStatus.TargetSite) != to_track_id)
                     {
-                        Thread.Sleep(500);
+                        Thread.Sleep(1000);
                         task.DoStop();
                         return false;
                     }
@@ -714,7 +714,7 @@ namespace task.device
                         }
                         else
                         {
-                            Thread.Sleep(500);
+                            Thread.Sleep(1000);
                             task.DoStop();
                         }
 
@@ -729,7 +729,7 @@ namespace task.device
                         }
                         else
                         {
-                            Thread.Sleep(500);
+                            Thread.Sleep(1000);
                             task.DoStop();
                         }
 
@@ -739,8 +739,10 @@ namespace task.device
                     #region 交管 
                     if (ExistsAvoid(task, to_track_id, out result))
                     {
+                        mlog.Info(true, string.Format(@"定位车【{0}】,存在避让【{1}】", task.Device.name, result));
                         return false;
                     }
+                    mlog.Info(true, string.Format(@"定位车【{0}】,不需避让【{1}】", task.Device.name, result));
                     #endregion
 
                     #region 定位前检查同轨道的摆渡车
@@ -936,7 +938,7 @@ namespace task.device
             foreach (FerryTask other in ferries)
             {
                 // 停用了就不管？
-                if (!other.IsWorking) continue;
+                //if (!other.IsWorking) continue;
 
                 // 其一摆渡当前轨道ID
                 uint otherTrackId = other.GetFerryCurrentTrackId();
@@ -959,6 +961,9 @@ namespace task.device
                 {
                     otherToOrder = 0;
                 }
+
+                mlog.Info(true, string.Format(@"定位车【{0}】移序【{1} - {2}】，同轨车【{3}】移序【{4} - {5}】",
+                    task.Device.name, fromOrder, toOrder, other.Device.name, otherOrder, otherToOrder));
 
                 if (otherOrder == 0 && otherToOrder == 0)
                 {

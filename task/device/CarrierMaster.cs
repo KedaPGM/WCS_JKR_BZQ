@@ -712,6 +712,7 @@ namespace task.device
                 }
             }
 
+            mlog.Info(true, string.Format(@"运输车【{0}】,操作【{1}】，PC手动", devid, carriertask));
             DoTask(devid, carriertask, isoversize);
             result = "";
             return true;

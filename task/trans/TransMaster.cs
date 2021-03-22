@@ -1107,7 +1107,10 @@ namespace task.trans
                                 trans.IsReleaseGiveFerry = true;
                             }
 
-                            SetStatus(trans, TransStatusE.完成);
+                            if (PubTask.Carrier.IsStopFTask(trans.carrier_id))
+                            {
+                                SetStatus(trans, TransStatusE.完成);
+                            }
                             break;
                             #endregion
                     }
@@ -2058,7 +2061,7 @@ namespace task.trans
         /// <returns></returns>
         public uint GetRecordTraID(uint transid)
         {
-            return TransList.Find(c => c.id == transid)?.RecordTraID ?? 0;
+            return TransList.Find(c =>!c.finish && c.id == transid)?.RecordTraID ?? 0;
         }
 
         #endregion

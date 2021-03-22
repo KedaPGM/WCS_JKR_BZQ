@@ -170,7 +170,7 @@ namespace task.device
                     tc.create_time = DateTime.Now;
                     PubMaster.Mod.TrafficCtlSql.AddTrafficCtl(tc);
                     TrafficCtlList.Add(tc);
-                    result = "";
+                    result = "生成交管.";
                     return true;
                 }
                 finally
@@ -217,11 +217,11 @@ namespace task.device
         {
             if (ctl.TrafficControlStatus != status)
             {
-                mLog.Status(true, string.Format("交管：{0}，原状态：{1}, 新状态：{2}, 备注：{3}", ctl.id, ctl.TrafficControlStatus, status, memo));
                 ctl.TrafficControlStatus = status;
                 ctl.update_time = System.DateTime.Now;
                 PubMaster.Mod.TrafficCtlSql.EditTrafficCtl(ctl, TrafficControlUpdateE.Status);
             }
+            mLog.Status(true, string.Format("交管：{0}，状态【{1} -> {2}】, 备注：{3}", ctl.id, ctl.TrafficControlStatus, status, memo));
         }
 
         #endregion
@@ -259,22 +259,23 @@ namespace task.device
                 }
 
                 // 交管车当前位置是否满足结束交管条件
-                if (IsMeetLocationForFerry(ctl.control_id, ctl.from_track_id, ctl.to_track_id))
+                if (IsMeetLocationForFerry(ctl.control_id, ctl.from_track_id, ctl.to_track_id, out string result))
                 {
-                    SetStatus(ctl, TrafficControlStatusE.已完成);
+                    SetStatus(ctl, TrafficControlStatusE.已完成, result);
                     return;
                 }
 
                 // 是否允许交管摆渡车移动
-                if (IsAllowToMoveForFerry(ctl.control_id, out string result))
+                if (IsAllowToMoveForFerry(ctl.control_id, out result))
                 {
                     // 让交管车定位到结束点
                     if (PubTask.Ferry.DoLocateFerry(ctl.control_id, ctl.to_track_id, out result))
                     {
-                        SetStatus(ctl, TrafficControlStatusE.已完成);
+                        SetStatus(ctl, TrafficControlStatusE.已完成, result);
                         return;
                     }
                 }
+                SetStatus(ctl, TrafficControlStatusE.交管中, result);
 
             }
             catch (Exception ex)
@@ -323,12 +324,14 @@ namespace task.device
         /// 是否满足交管摆渡车位置条件
         /// </summary>
         /// <returns></returns>
-        private bool IsMeetLocationForFerry(uint ferryid, uint fromTraid, uint toTraid)
+        private bool IsMeetLocationForFerry(uint ferryid, uint fromTraid, uint toTraid, out string result)
         {
+            result = "";
             // 当前轨道ID
             uint nowTraid = PubTask.Ferry.GetFerryCurrentTrackId(ferryid);
             if (nowTraid == 0)
             {
+                result = "没有交管车当前轨道数据【跳过】";
                 return false;
             }
 
@@ -342,6 +345,7 @@ namespace task.device
             if (Norder == 0 || Forder == 0 || Torder == 0)
             {
                 // 没配置？不管了 直接完成
+                result = "没配置轨道序号【满足条件】";
                 return true;
             }
 
@@ -349,6 +353,7 @@ namespace task.device
             if ((Torder > Forder && Norder >= Torder) ||
                 (Torder < Forder && Norder <= Torder))
             {
+                result = "在范围移动方向之外【满足条件】";
                 return true;
             }
 
