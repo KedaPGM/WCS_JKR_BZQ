@@ -925,12 +925,12 @@ namespace task.device
             int limit1, limit2;
             if (fromOrder >= toOrder)
             {
-                limit1 = (toOrder - safedis) <= 0 ? toOrder : (toOrder - safedis);
+                limit1 = (toOrder - safedis) <= 0 ? 1 : (toOrder - safedis);
                 limit2 = (fromOrder + safedis) > maxdis ? maxdis : (fromOrder + safedis);
             }
             else
             {
-                limit1 = (fromOrder - safedis) <= 0 ? toOrder : (fromOrder - safedis);
+                limit1 = (fromOrder - safedis) <= 0 ? 1 : (fromOrder - safedis);
                 limit2 = (toOrder + safedis) > maxdis ? maxdis : (toOrder + safedis);
             }
 
@@ -962,8 +962,8 @@ namespace task.device
                     otherToOrder = 0;
                 }
 
-                mlog.Info(true, string.Format(@"定位车【{0}】移序【{1} - {2}】，同轨车【{3}】移序【{4} - {5}】",
-                    task.Device.name, fromOrder, toOrder, other.Device.name, otherOrder, otherToOrder));
+                mlog.Info(true, string.Format(@"定位车【{0}】移序【{1} - {2}】安全范围【{6}-{7}】，同轨车【{3}】移序【{4} - {5}】",
+                    task.Device.name, fromOrder, toOrder, other.Device.name, otherOrder, otherToOrder, limit1, limit2));
 
                 if (otherOrder == 0 && otherToOrder == 0)
                 {
@@ -1005,7 +1005,7 @@ namespace task.device
                 }
 
             }
-            msg = "";
+            msg = "无检测到避让";
             return false;
         }
 
