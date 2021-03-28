@@ -708,6 +708,7 @@ namespace task.device
                     {
                         Thread.Sleep(1000);
                         task.DoStop();
+                        result = "消除残留目标点！";
                         return false;
                     }
 
@@ -721,6 +722,7 @@ namespace task.device
                         else
                         {
                             Thread.Sleep(1000);
+                            result = "到位执行终止！";
                             task.DoStop();
                         }
 
@@ -736,6 +738,7 @@ namespace task.device
                         else
                         {
                             Thread.Sleep(1000);
+                            result = "到位执行终止！";
                             task.DoStop();
                         }
 
@@ -944,7 +947,7 @@ namespace task.device
             foreach (FerryTask other in ferries)
             {
                 // 停用了就不管？
-                //if (!other.IsWorking) continue;
+                if (!other.IsWorking && !other.IsEnable) continue;
 
                 // 其一摆渡当前轨道ID
                 uint otherTrackId = other.GetFerryCurrentTrackId();
@@ -973,7 +976,7 @@ namespace task.device
 
                 if (otherOrder == 0)
                 {
-                    // 没有配置？也当作不用避让处理？
+                    // 没有配置？不动
                     msg = "没有轨道避让顺序";
                     return true;
                 }
@@ -1022,6 +1025,55 @@ namespace task.device
 
             }
             msg = "无检测到避让";
+            return false;
+        }
+
+        /// <summary>
+        /// 是否等于0
+        /// </summary>
+        /// <returns></returns>
+        private bool IsEqualsZero(short x, out int funNum)
+        {
+            funNum = 0;
+
+            // funtion 1
+            if (x == 0)
+            {
+                funNum = 1;
+                return true;
+            }
+
+            // funtion 2
+            if (x.Equals(0))
+            {
+                funNum = 2;
+                return true;
+            }
+
+            // funtion 3
+            if (x.CompareTo(0) == 0)
+            {
+                funNum = 3;
+                return true;
+            }
+
+            // funtion 4
+            switch (x)
+            {
+                case 0:
+                    funNum = 4;
+                    return true;
+                default:
+                    break;
+            }
+
+            // funtion 5
+            if (x.CompareTo(0) == 0)
+            {
+                funNum = 5;
+                return true;
+            }
+
             return false;
         }
 

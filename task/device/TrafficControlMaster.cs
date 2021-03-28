@@ -221,7 +221,7 @@ namespace task.device
                 ctl.update_time = System.DateTime.Now;
                 PubMaster.Mod.TrafficCtlSql.EditTrafficCtl(ctl, TrafficControlUpdateE.Status);
             }
-            mLog.Status(true, string.Format("交管：{0}，状态【{1} -> {2}】, 备注：{3}", ctl.id, ctl.TrafficControlStatus, status, memo));
+            mLog.Status(true, string.Format("交管[ {0} ], 状态[ {1} -> {2} ], 备注[ {3} ]", ctl.id, ctl.TrafficControlStatus, status, memo));
         }
 
         #endregion
@@ -252,14 +252,16 @@ namespace task.device
         {
             try
             {
+                string result = "";
                 // 是否存在被运输车交管
                 if (ExistsTrafficControl(TrafficControlTypeE.运输车交管摆渡车, ctl.control_id))
                 {
+                    result = "【X】存在运输车交管！";
                     return;
                 }
 
                 // 交管车当前位置是否满足结束交管条件
-                if (IsMeetLocationForFerry(ctl.control_id, ctl.from_track_id, ctl.to_track_id, out string result))
+                if (IsMeetLocationForFerry(ctl.control_id, ctl.from_track_id, ctl.to_track_id, out result))
                 {
                     SetStatus(ctl, TrafficControlStatusE.已完成, result);
                     return;
@@ -331,7 +333,7 @@ namespace task.device
             uint nowTraid = PubTask.Ferry.GetFerryCurrentTrackId(ferryid);
             if (nowTraid == 0)
             {
-                result = "没有交管车当前轨道数据【跳过】";
+                result = "【X】没有当前轨道数据";
                 return false;
             }
 
@@ -345,15 +347,15 @@ namespace task.device
             if (Norder == 0 || Forder == 0 || Torder == 0)
             {
                 // 没配置？不管了 直接完成
-                result = "没配置轨道序号【满足条件】";
-                return true;
+                result = "【X】没配置轨道避让顺序";
+                return false;
             }
 
             // 当前位置 需要在移动方向之外
             if ((Torder > Forder && Norder >= Torder) ||
                 (Torder < Forder && Norder <= Torder))
             {
-                result = "在范围移动方向之外【满足条件】";
+                result = "【√】在移动方向避让范围之外";
                 return true;
             }
 
@@ -381,7 +383,7 @@ namespace task.device
                     List<uint> Ftraids = ferry.GetFerryCurrentTrackIds();
                     if (Ftraids == null || Ftraids.Count == 0)
                     {
-                        result = "无摆渡车对位数据！";
+                        result = "【X】无当前位置数据！";
                         return false;
                     }
 
@@ -389,7 +391,7 @@ namespace task.device
                     uint Ctraid = PubTask.Carrier.GetCarrierTrackID(trans.carrier_id);
                     if (Ftraids.Contains(Ctraid))
                     {
-                        result = "对应运输车任务待定！";
+                        result = "【X】对应运输车任务待定！";
                         return false;
                     }
 
@@ -402,17 +404,17 @@ namespace task.device
                             case TransTypeE.手动入库:
                                 if (trans.TransStaus == TransStatusE.取砖流程 && Ftraids.Contains(trans.take_track_id))
                                 {
-                                    result = "准备取货！";
+                                    result = "【X】任务取砖流程中！";
                                     return false;
                                 }
                                 if (trans.TransStaus == TransStatusE.放砖流程 && Ftraids.Contains(trans.give_track_id))
                                 {
-                                    result = "准备卸货！";
+                                    result = "【X】任务放砖流程中！";
                                     return false;
                                 }
                                 if (trans.TransStaus == TransStatusE.取消 && Ftraids.Contains(trans.give_track_id))
                                 {
-                                    result = "取消中！";
+                                    result = "【X】任务取消流程中！";
                                     return false;
                                 }
                                 break;
@@ -423,24 +425,24 @@ namespace task.device
                                     // 运输车无货 需要取砖
                                     if (PubTask.Carrier.IsNotLoad(trans.carrier_id) && Ftraids.Contains(trans.take_track_id))
                                     {
-                                        result = "准备取货！";
+                                        result = "【X】任务取砖流程中！";
                                         return false;
                                     }
                                     // 运输车载货 需要放砖
                                     if (PubTask.Carrier.IsLoad(trans.carrier_id) && Ftraids.Contains(trans.give_track_id))
                                     {
-                                        result = "准备卸货！";
+                                        result = "【X】任务放砖流程中！";
                                         return false;
                                     }
                                 }
                                 if (trans.TransStaus == TransStatusE.还车回轨 && Ftraids.Contains(trans.finish_track_id))
                                 {
-                                    result = "准备还车回轨！";
+                                    result = "【X】任务还车流程中！";
                                     return false;
                                 }
                                 if (trans.TransStaus == TransStatusE.取消 && Ftraids.Contains(trans.take_track_id))
                                 {
-                                    result = "取消中！";
+                                    result = "【X】任务取消流程中！";
                                     return false;
                                 }
                                 break;
@@ -448,7 +450,7 @@ namespace task.device
                             case TransTypeE.移车:
                                 if (trans.TransStaus == TransStatusE.移车中 && Ftraids.Contains(trans.give_track_id))
                                 {
-                                    result = "准备移车！";
+                                    result = "【X】任务移车流程中！";
                                     return false;
                                 }
                                 break;
