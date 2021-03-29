@@ -170,7 +170,7 @@ namespace task.device
                     tc.create_time = DateTime.Now;
                     PubMaster.Mod.TrafficCtlSql.AddTrafficCtl(tc);
                     TrafficCtlList.Add(tc);
-                    result = "生成交管：" + tc.id;
+                    result = string.Format("生成交管【{0}】，让【{1}】从【{2}】到【{3}】", tc.id, tc.control_id, tc.from_track_id, tc.to_track_id);
                     return true;
                 }
                 finally

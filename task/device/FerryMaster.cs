@@ -571,6 +571,7 @@ namespace task.device
                     // 避让不让发指令
                     if (ExistsAvoid(task, trackid, out result, false))
                     {
+                        mlog.Info(true, string.Format(@"定位车【{0}】,存在避让【{1}】", task.Device.name, result));
                         return false;
                     }
 
@@ -919,7 +920,7 @@ namespace task.device
 
             if (fromOrder == 0 || toOrder == 0)
             {
-                // 无顺序 即不需要避让？
+                // 无顺序 不动
                 msg = "没有轨道避让顺序";
                 return true;
             }
@@ -1032,37 +1033,39 @@ namespace task.device
         /// 是否等于0
         /// </summary>
         /// <returns></returns>
-        private bool IsEqualsZero(short x, out int funNum)
+        private bool IsEqualsZero(short x, out string funNum)
         {
-            funNum = 0;
+            funNum = "";
+            bool isok = false;
 
             // funtion 1
             if (x == 0)
             {
-                funNum = 1;
-                return true;
+                funNum = funNum + "1,";
+                isok = true;
             }
 
             // funtion 2
             if (x.Equals(0))
             {
-                funNum = 2;
-                return true;
+                funNum = funNum + "2,";
+                isok = true;
             }
 
             // funtion 3
             if (x.CompareTo(0) == 0)
             {
-                funNum = 3;
-                return true;
+                funNum = funNum + "3,";
+                isok = true;
             }
 
             // funtion 4
             switch (x)
             {
                 case 0:
-                    funNum = 4;
-                    return true;
+                    funNum = funNum + "4,";
+                    isok = true;
+                    break;
                 default:
                     break;
             }
@@ -1070,11 +1073,11 @@ namespace task.device
             // funtion 5
             if (x.CompareTo(0) == 0)
             {
-                funNum = 5;
-                return true;
+                funNum = funNum + "5,";
+                isok = true;
             }
 
-            return false;
+            return isok;
         }
 
         #endregion
