@@ -117,6 +117,19 @@ namespace task.device
                                 task.DoSiteQuery(set.QueryPos);
                             }
 
+                            #region 失去位置信息
+                            uint ctid = task.GetFerryCurrentTrackId();
+                            Track ct = PubMaster.Track.GetTrack(ctid);
+                            if (ct == null || ctid == 0 || ctid.Equals(0) || ctid.CompareTo(0) == 0)
+                            {
+                                PubMaster.Warn.AddDevWarn(WarningTypeE.FerryNoLocation, (ushort)task.ID);
+                            }
+                            else
+                            {
+                                PubMaster.Warn.RemoveDevWarn(WarningTypeE.FerryNoLocation, (ushort)task.ID);
+                            }
+                            #endregion
+
                             if (task.Status == DevFerryStatusE.停止 && task.DevStatus.CurrentTask == DevFerryTaskE.定位)
                             {
                                 //上砖测轨道ID 或 下砖测轨道ID
@@ -913,12 +926,30 @@ namespace task.device
 
             // 当前轨道ID
             uint TrackId = task.GetFerryCurrentTrackId();
-            // 当前摆渡车对着的轨道的顺序
-            short fromOrder = PubMaster.Track.GetTrack(TrackId)?.order ?? 0;
-            // 目的轨道顺序
-            short toOrder = PubMaster.Track.GetTrack(to_track_id)?.order ?? 0;
 
-            if (fromOrder == 0 || toOrder == 0)
+            #region 失去位置信息
+            Track ct = PubMaster.Track.GetTrack(TrackId);
+            if (ct == null || TrackId == 0 || TrackId.Equals(0) || TrackId.CompareTo(0) == 0)
+            {
+                msg = task.Device.name + "：没有当前位置信息";
+                return true;
+            }
+
+            Track tt = PubMaster.Track.GetTrack(to_track_id);
+            if (tt == null || to_track_id == 0 || to_track_id.Equals(0) || to_track_id.CompareTo(0) == 0)
+            {
+                msg = task.Device.name + "：找不到目的位置信息";
+                return true;
+            }
+            #endregion
+
+            // 当前摆渡车对着的轨道的顺序
+            short fromOrder = ct?.order ?? 0;
+            // 目的轨道顺序
+            short toOrder = tt?.order ?? 0;
+
+            if (fromOrder == 0 || fromOrder.Equals(0) || fromOrder.CompareTo(0) == 0
+                || toOrder == 0 || toOrder.Equals(0) || toOrder.CompareTo(0) == 0)
             {
                 // 无顺序 不动
                 msg = "没有轨道避让顺序";
@@ -952,8 +983,18 @@ namespace task.device
 
                 // 其一摆渡当前轨道ID
                 uint otherTrackId = other.GetFerryCurrentTrackId();
+
+                #region 失去位置信息
+                Track ot = PubMaster.Track.GetTrack(otherTrackId);
+                if (ot == null || otherTrackId == 0 || otherTrackId.Equals(0) || otherTrackId.CompareTo(0) == 0)
+                {
+                    msg = other.Device.name + "：没有当前位置信息";
+                    return true;
+                }
+                #endregion
+
                 // 其一摆渡当前轨道顺序
-                short otherOrder = PubMaster.Track.GetTrack(otherTrackId)?.order ?? 0;
+                short otherOrder = ot?.order ?? 0;
                 // 其一摆渡目的轨道顺序
                 short otherToOrder = PubMaster.Track.GetTrackByCode(other.DevStatus.TargetSite)?.order ?? 0;
 
@@ -975,7 +1016,7 @@ namespace task.device
                 mlog.Info(true, string.Format(@"定位车【{0}】移序【{1} - {2}】安全范围【{6}-{7}】，同轨车【{3}】移序【{4} - {5}】",
                     task.Device.name, fromOrder, toOrder, other.Device.name, otherOrder, otherToOrder, limit1, limit2));
 
-                if (otherOrder == 0)
+                if (otherOrder == 0 || otherOrder.Equals(0) || otherOrder.CompareTo(0) == 0)
                 {
                     // 没有配置？不动
                     msg = "没有轨道避让顺序";
