@@ -184,6 +184,32 @@ namespace task.device
             }
 
         }
+
+        /// <summary>
+        /// 清空设备信息
+        /// </summary>
+        /// <param name="iD"></param>
+        public void ClearTaskStatus(uint carrierid)
+        {
+            if (Monitor.TryEnter(_obj, TimeSpan.FromSeconds(1)))
+            {
+                try
+                {
+                    CarrierTask task = DevList.Find(c => c.ID == carrierid);
+                    if (task != null)
+                    {
+                        PubTask.Ferry.UpdateFerryWithTrackId(task.TrackId, DevFerryLoadE.空);
+                        task.ClearDevStatus();
+                        MsgSend(task, task.DevStatus);
+                    }
+                }
+                finally
+                {
+                    Monitor.Exit(_obj);
+                }
+            }
+        }
+
         #endregion
 
         #region[获取信息]
