@@ -130,8 +130,8 @@ namespace task.device
                                     #region [复位]
                                     if (task.Device.do_shift)
                                     {
-                                        Thread.Sleep(500);
                                         task.DoShift(TileShiftStatusE.转产中, count);
+                                        Thread.Sleep(500);
                                         break;
                                     }
 
@@ -139,8 +139,9 @@ namespace task.device
                                     {
                                         if (task.DevStatus.ShiftAccept)
                                         {
-                                            Thread.Sleep(500);
+                                            PubMaster.Warn.RemoveDevWarn(WarningTypeE.TileHaveNotSameGoods, (ushort)task.ID);
                                             task.DoShift(TileShiftStatusE.复位);
+                                            Thread.Sleep(500);
                                         }
 
                                         if (task.Device.LeftGoods != task.DevStatus.Goods1 || 
@@ -158,8 +159,8 @@ namespace task.device
                                     {
                                         if (!task.DevStatus.ShiftAccept)
                                         {
-                                            Thread.Sleep(500);
                                             task.DoShift(TileShiftStatusE.转产中, count);
+                                            Thread.Sleep(500);
                                             break;
                                         }
                                     }
@@ -168,25 +169,41 @@ namespace task.device
                                     {
                                         if (task.DevStatus.ShiftAccept)
                                         {
-                                            Thread.Sleep(500);
                                             task.DoShift(TileShiftStatusE.复位);
+                                            Thread.Sleep(500);
                                             break;
                                         }
                                     }
                                     #endregion
                                     break;
                                 case TileShiftStatusE.完成:
-                                    #region [完成]
-                                    if (task.Device.do_shift && task.DevStatus.ShiftAccept &&
-                                        task.Device.LeftGoods != task.DevStatus.Goods1 &&
-                                        task.Device.RightGoods != task.DevStatus.Goods2 &&
-                                        task.DevStatus.Goods1 == task.DevStatus.Goods2)
+
+                                    if (!task.Device.do_shift)
                                     {
-                                        Thread.Sleep(500);
                                         task.DoShift(TileShiftStatusE.复位);
+                                        Thread.Sleep(500);
+                                    }
+
+                                    #region [完成]
+                                    if (task.Device.do_shift // && task.DevStatus.ShiftAccept
+                                        //&& task.Device.LeftGoods != task.DevStatus.Goods1 
+                                        //&& task.Device.RightGoods != task.DevStatus.Goods2 
+                                        //&& task.DevStatus.Goods1 == task.DevStatus.Goods2
+                                        )
+                                    {
+                                        if (task.DevStatus.Goods1 != task.DevStatus.Goods2)
+                                        {
+                                            PubMaster.Warn.AddDevWarn(WarningTypeE.TileHaveNotSameGoods, (ushort)task.ID);
+                                            break;
+                                        }
+
+                                        PubMaster.Warn.RemoveDevWarn(WarningTypeE.TileHaveNotSameGoods, (ushort)task.ID);
+                                        task.DoShift(TileShiftStatusE.复位);
+                                        Thread.Sleep(500);
 
                                         task.Device.do_shift = false;
                                         PubMaster.Device.SetTileLifterGoods(task.ID, task.DevStatus.Goods1, task.DevStatus.Goods2);
+
                                         break;
                                     }
                                     #endregion

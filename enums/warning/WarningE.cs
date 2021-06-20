@@ -27,6 +27,7 @@
         UpTileHaveNoTrackToOut,//砖机找不到有砖轨道上砖
 
         FerryNoLocation, //摆渡车没有位置信息
+        TileHaveNotSameGoods, //砖机完成转产后左右工位品种不一致，无法复位
     }
 
     public enum CarrierWarnE

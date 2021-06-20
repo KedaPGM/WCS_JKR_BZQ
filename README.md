@@ -71,3 +71,7 @@ INSERT INTO `wcs_module`(`id`, `name`, `type`, `key`, `entity`, `brush`, `geomet
 INSERT INTO `wcs_module`(`id`, `name`, `type`, `key`, `entity`, `brush`, `geometry`, `winctlname`, `memo`) VALUES (32, '摆渡车对位', 1, 'RFARFTRACK', 'com.keda.wcsfixplatformapp.screen.rfferrypose.RfFerryPosScreen', '', 'arttoposition.png', NULL, '平板-摆渡车对位');
 
 ```
+
+
+#21.06.20
+INSERT INTO `diction_dtl`(`id`, `diction_id`, `code`, `name`, `int_value`, `bool_value`, `string_value`, `double_value`, `uint_value`, `order`, `updatetime`) VALUES (10, 3, 'TileHaveNotSameGoods', '砖机左右工位品种不一致，无法复位转产', NULL, NULL, '砖机左右工位品种不一致，无法复位转产', NULL, NULL, NULL, NULL);
